@@ -1,0 +1,45 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+import math
+
+class ThesisDroughtAnalysis:
+    def __init__(self, elevation_threshold=500):
+        self.threshold = elevation_threshold # Elevation threshold for model selection 
+
+    def power_transformation_bias_correction(self, raw_p, a, b):
+        """Applies P_corr = a * P_raw^b to adjust model outputs [cite: 981, 1431]"""
+        return a * (raw_p ** b)
+
+    def select_model_by_elevation(self, elevation, cnrm_p, hadgem_p):
+        """
+        Elevation-stratified model merging: 
+        CNRM for lowlands (<500m), HadGEM for mountains (>=500m) [cite: 30, 885, 998, 999]
+        """
+        return cnrm_p if elevation < self.threshold else hadgem_p
+
+    def calculate_spi(self, data, scale=3):
+        """
+        Calculates Standardized Precipitation Index (SPI) using Gamma distribution [cite: 26, 376, 553, 655]
+        """
+        # Simplified SPI logic for code sample purposes
+        series = pd.Series(data)
+        rolling_sum = series.rolling(window=scale).sum().dropna()
+        
+        # Fit Gamma distribution and transform to normal [cite: 655, 668]
+        shape, loc, scale_param = stats.gamma.fit(rolling_sum)
+        gamma_cdf = stats.gamma.cdf(rolling_sum, shape, loc, scale_param)
+        spi = stats.norm.ppf(gamma_cdf)
+        return spi
+
+    def evaluate_performance(self, observed, satellite):
+        """Computes key statistical metrics: CC, RMSE, and PBIAS [cite: 26, 369, 554, 647]"""
+        cc, _ = stats.pearsonr(observed, satellite)
+        rmse = np.sqrt(((observed - satellite) ** 2).mean())
+        pbias = (np.sum(satellite - observed) / np.sum(observed)) * 100
+        return {"CC": cc, "RMSE": rmse, "PBIAS": pbias}
+
+# Example Usage
+analysis = ThesisDroughtAnalysis()
+# Performance evaluation logic from Chapter IV [cite: 536]
+metrics = analysis.evaluate_performance(observed_data, persiann_data)
