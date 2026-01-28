@@ -30,5 +30,7 @@ Data Sources: MED-CORDEX (RCMs), PERSIANN-CCS-CDR, ERA5 Reanalysis
 
 Citation
 If you use this methodology, please cite: 
+
 Najmi, A., et al. (2023). Evaluation of PERSIANN-CCS-CDR, ERA5, and SM2RAIN-ASCAT rainfall products... Journal of Water and Climate Change.
+
 Najmi, A., et al. (2026). Evaluation of Precipitation-Based Drought Indices Under Future Climate Change Scenarios... the Journal of Earth Systems and Environment (ESEV).
